@@ -7,6 +7,7 @@ import { Routes } from '@common/interfaces/routes.interface'
 import { CREDENTIALS, LOG_FORMAT, NODE_ENV, ORIGIN, PORT } from '@config'
 import { AppDataSource } from './databases'
 import { genericError } from '@common/exceptions/standard-error'
+import apiKeyMiddleware from '@middlewares/apikey.middleware'
 
 export default class App {
   public app: express.Application
@@ -50,6 +51,7 @@ export default class App {
     this.app.use(helmet())
     this.app.use(express.json())
     this.app.use(express.urlencoded({ extended: true }))
+    this.app.use(apiKeyMiddleware)
   }
 
   private initializeRoutes(routes: Routes[]) {
