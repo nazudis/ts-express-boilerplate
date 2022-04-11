@@ -1,11 +1,11 @@
 export default class BaseResponse<T> {
-  statusCode: number
+  status: number
   message: string
   data: T | Array<T>
 
   constructor(message: string, data: T | T[], statusCode?: number) {
     this.message = message
     this.data = data
-    this.statusCode = statusCode || 200
+    this.status = statusCode || 200
   }
 }

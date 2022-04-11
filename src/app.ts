@@ -6,6 +6,7 @@ import helmet from 'helmet'
 import { Routes } from '@common/interfaces/routes.interface'
 import { CREDENTIALS, LOG_FORMAT, NODE_ENV, ORIGIN, PORT } from '@config'
 import { AppDataSource } from './databases'
+import { genericError } from '@common/exceptions/standard-error'
 
 export default class App {
   public app: express.Application
@@ -58,17 +59,6 @@ export default class App {
   }
 
   private initializeErrorMiddlerware() {
-    // TODO : Create Exported Function
-    this.app.use((error, req, res, next) => {
-      try {
-        const statusCode = error.status || 500
-        const message = error.message || 'Something went wrong'
-
-        console.error(`[${req.method}] ${req.path} >> StatusCode:: ${statusCode}, Message:: ${message}`)
-        res.status(statusCode).json({ statusCode, message })
-      } catch (err) {
-        next(err)
-      }
-    })
+    this.app.use(genericError)
   }
 }
