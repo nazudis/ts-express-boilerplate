@@ -13,11 +13,11 @@ class HttpException extends Error {
 
 function genericError(error: HttpException, req: Request, res: Response, next: NextFunction) {
   try {
-    const statusCode = error.status || 500
+    const status = error.status || 500
     const message = error.message || 'Something went wrong'
 
-    console.error(`[${req.method}] ${req.path} >> StatusCode:: ${statusCode}, Message:: ${message}`)
-    res.status(statusCode).json({ statusCode, message })
+    console.error(`[${req.method}] ${req.path} >> StatusCode:: ${status}, Message:: ${message}`)
+    res.status(status).json({ status, message })
   } catch (err) {
     next(err)
   }
