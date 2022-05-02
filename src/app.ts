@@ -3,6 +3,7 @@ import express from 'express'
 import morgan from 'morgan'
 import cors from 'cors'
 import helmet from 'helmet'
+import { totalmem, uptime, freemem, cpus } from 'os'
 import { Routes } from '@common/interfaces/routes.interface'
 import { CREDENTIALS, LOG_FORMAT, NODE_ENV, ORIGIN, PORT } from '@config'
 import { AppDataSource } from './databases'
@@ -58,9 +59,31 @@ export default class App {
     routes.forEach(route => {
       this.app.use('/api', route.router)
     })
+    this.initializeBaseRoot()
   }
 
   private initializeErrorMiddlerware() {
     this.app.use(genericError)
+  }
+
+  private initializeBaseRoot() {
+    this.app.get('/', (_, res) => {
+      res.send({ status: 200, message: 'Server is running' })
+    })
+
+    this.app.get('/health', (_, res) => {
+      res.send({
+        status: 200,
+        message: 'Healthy',
+        data: {
+          memory: {
+            total: Math.floor(totalmem() / 1e9),
+            free: Math.floor(freemem() / 1e9),
+          },
+          cpus: cpus()[0].model,
+          uptime: `${Math.floor(uptime() / 3600)}H`,
+        },
+      })
+    })
   }
 }
